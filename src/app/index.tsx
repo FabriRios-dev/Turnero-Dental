@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import ProfesionalCard from "../components/ProfesionalCard";
 import profesionales from "../components/Profesionales";
@@ -16,16 +17,17 @@ export default function Index() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {profesionales.map((profesional) => (
-          <ProfesionalCard
-            key={profesional.id}
-            nombre={profesional.nombre}
-            especialidad={profesional.especialidad}
-            imagen={profesional.imagen}
-            disponibilidad={profesional.disponibilidad}
-          />
+          <Link key={profesional.id} href={`profesional/${profesional.id}`}>
+            <ProfesionalCard
+              nombre={profesional.nombre}
+              especialidad={profesional.especialidad}
+              imagen={profesional.imagen}
+              disponibilidad={profesional.disponibilidad}
+            />
+          </Link>
         ))}
       </ScrollView>
-    </View>
+    </View >
   );
 }
 
