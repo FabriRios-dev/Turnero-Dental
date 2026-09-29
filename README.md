@@ -14,6 +14,7 @@ Digitales — Institución Cervantes.
 ## Integrantes
 
 - Fabricio Nahuel Rios -
+- Constanza Sofia Ferreyra -
 
 ## Unidad I — Estado actual
 
@@ -27,15 +28,13 @@ Primera base de la aplicación:
 
 ## Features previstas
 
-| Feature                                    | Estado       |
-| ------------------------------------------ | ------------ |
-| Listado de profesionales (datos estáticos) | ✅ Hecho     |
-| Componente reutilizable con props          | ✅ Hecho     |
-| Pantalla de detalle de cada profesional    | ⏳ Pendiente |
-| Selección de horario y pedido de turno     | ⏳ Pendiente |
-| Conexión a backend / base de datos real    | ⏳ Pendiente |
-| Login de paciente                          | ⏳ Pendiente |
-| Notificaciones / recordatorios de turno    | ⏳ Pendiente |
+| Feature                                  | Estado       |
+| ----------------------------------------- | ------------ |
+| Consultar profesionales disponibles       | ✅ Hecho     |
+| Consultar el detalle de un profesional    | ✅ Hecho     |
+| Solicitar un turno                        | ⏳ Pendiente |
+| Iniciar sesión como paciente              | ⏳ Pendiente |
+| Recibir recordatorios de turno            | ⏳ Pendiente |
 
 ## Cómo correr el proyecto
 

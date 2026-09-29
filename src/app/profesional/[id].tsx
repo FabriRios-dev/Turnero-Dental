@@ -1,3 +1,4 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import profesionales from "../../components/Profesionales";
@@ -6,13 +7,21 @@ export default function Detalle() {
   const { id } = useLocalSearchParams();
   const profesional = profesionales.find((p) => p.id === id);
   const router = useRouter();
+
   if (!profesional) {
     return (<Text>Profesional no encontrado</Text>);
   }
+
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => router.back()}>
-        <Text style={styles.volver}>← Volver</Text>
+      <Pressable
+        onPress={() => router.back()}
+        style={styles.botonVolver}
+      >
+        <View style={styles.contenidoBoton}>
+          <Ionicons name="arrow-back" size={20} color="#8ab4f8" />
+          <Text style={styles.volver}>Volver</Text>
+        </View>
       </Pressable>
 
       <View style={styles.card}>
@@ -35,11 +44,24 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 16,
   },
+  botonVolver: {
+    backgroundColor: "#1c1f26",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginBottom: 12,
+  },
+  contenidoBoton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
   volver: {
     color: "#8ab4f8",
     fontSize: 16,
-    paddingVertical: 8,
-    marginBottom: 12,
   },
   card: {
     backgroundColor: "#1c1f26",

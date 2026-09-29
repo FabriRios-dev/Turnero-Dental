@@ -17,7 +17,7 @@ export default function Index() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {profesionales.map((profesional) => (
-          <Link key={profesional.id} href={`profesional/${profesional.id}`}>
+          <Link key={profesional.id} href={`/profesional/${profesional.id}`}>
             <ProfesionalCard
               nombre={profesional.nombre}
               especialidad={profesional.especialidad}
