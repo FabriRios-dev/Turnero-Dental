@@ -1,16 +1,28 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
-import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import ProfesionalCard from "../components/ProfesionalCard";
 import profesionales from "../components/Profesionales";
+import { useTema } from "../components/TemaContext";
 
 export default function Index() {
+  const { oscuro, cambiarTema, colores } = useTema();
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <View style={[styles.container, { backgroundColor: colores.fondo }]}>
+      <StatusBar barStyle={oscuro ? "light-content" : "dark-content"} />
 
       <View style={styles.header}>
-        <Text style={styles.title}>Turnero Dental</Text>
-        <Text style={styles.subtitle}>
+        <View style={styles.filaTitulo}>
+          <Text style={[styles.title, { color: colores.texto }]}>Turnero Dental</Text>
+          <Pressable
+            onPress={cambiarTema}
+            style={[styles.botonTema, { backgroundColor: colores.tarjeta }]}
+          >
+            <Ionicons name={oscuro ? "sunny" : "moon"} size={20} color={colores.acento} />
+          </Pressable>
+        </View>
+        <Text style={[styles.subtitle, { color: colores.textoSecundario }]}>
           Elegí un profesional para pedir tu turno
         </Text>
       </View>
@@ -34,21 +46,27 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#12141a",
   },
   header: {
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 16,
   },
+  filaTitulo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   title: {
     fontSize: 26,
     fontWeight: "bold",
-    color: "#ffffff",
+  },
+  botonTema: {
+    padding: 8,
+    borderRadius: 20,
   },
   subtitle: {
     fontSize: 14,
-    color: "#a0a4ad",
     marginTop: 4,
   },
   scrollContent: {

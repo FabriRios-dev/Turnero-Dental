@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
+import { useTema } from "./TemaContext";
 
 export default function ProfesionalCard({
   nombre,
@@ -6,13 +7,15 @@ export default function ProfesionalCard({
   imagen,
   disponibilidad,
 }) {
+  const { colores } = useTema();
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colores.tarjeta }]}>
       <Image source={{ uri: imagen }} style={styles.image} />
       <View style={styles.info}>
-        <Text style={styles.nombre}>{nombre}</Text>
-        <Text style={styles.especialidad}>{especialidad}</Text>
-        <Text style={styles.disponibilidad}>{disponibilidad}</Text>
+        <Text style={[styles.nombre, { color: colores.texto }]}>{nombre}</Text>
+        <Text style={[styles.especialidad, { color: colores.acento }]}>{especialidad}</Text>
+        <Text style={[styles.disponibilidad, { color: colores.textoSecundario }]}>{disponibilidad}</Text>
       </View>
     </View>
   );
@@ -21,7 +24,6 @@ export default function ProfesionalCard({
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    backgroundColor: "#1c1f26",
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
@@ -39,16 +41,13 @@ const styles = StyleSheet.create({
   nombre: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#ffffff",
   },
   especialidad: {
     fontSize: 13,
-    color: "#8ab4f8",
     marginTop: 2,
   },
   disponibilidad: {
     fontSize: 12,
-    color: "#a0a4ad",
     marginTop: 4,
   },
 });
