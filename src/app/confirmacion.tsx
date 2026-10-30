@@ -5,9 +5,12 @@ import { consultorio } from "../components/Profesionales";
 import { useTema } from "../components/TemaContext";
 
 export default function Confirmacion() {
-  const { nombre, telefono, horario, profesional } = useLocalSearchParams();
+  const { nombre, telefono, horario, fecha, profesional } = useLocalSearchParams();
   const router = useRouter();
   const { colores } = useTema();
+  const fechaLocal = fecha
+    ? String(fecha).split("-").reverse().join("-")
+    : "";
 
   const compartirTurno = async () => {
     const mapa = `https://www.google.com/maps/search/?api=1&query=${consultorio.latitude},${consultorio.longitude}`;
@@ -17,6 +20,7 @@ export default function Confirmacion() {
         `Turno confirmado 🦷\n` +
         `Paciente: ${nombre}\n` +
         `Profesional: ${profesional}\n` +
+        `Fecha: ${fechaLocal}\n` +
         `Horario: ${horario}\n` +
         `Lugar: ${consultorio.nombre}\n` +
         mapa,
@@ -32,6 +36,7 @@ export default function Confirmacion() {
         <Text style={[styles.dato, { color: colores.textoSecundario }]}>Paciente: {nombre}</Text>
         <Text style={[styles.dato, { color: colores.textoSecundario }]}>Teléfono: {telefono}</Text>
         <Text style={[styles.dato, { color: colores.textoSecundario }]}>Profesional: {profesional}</Text>
+        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Fecha: {fechaLocal}</Text>
         <Text style={[styles.dato, { color: colores.textoSecundario }]}>Horario: {horario}</Text>
         <Text style={[styles.dato, { color: colores.textoSecundario }]}>Lugar: {consultorio.nombre}</Text>
       </View>
