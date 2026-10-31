@@ -30,7 +30,10 @@ horarios, y deja reservar un turno:
   el consultorio
 - Compartir el turno por WhatsApp (u otra app) desde la confirmación
 - Tema claro / oscuro con un botón
+- Mis turnos: listado de los turnos reservados, traídos desde la API
+- Perfil: foto de perfil sacada con la cámara o elegida de la galería
 - Estado global con Zustand (`useAppStore`) para la sesión y el turno
+- Backend propio (API en ASP.NET) y base de datos en SQL Server
 
 ## Features previstas
 
@@ -42,9 +45,13 @@ horarios, y deja reservar un turno:
 | Cómo llegar al consultorio (GPS)          | ✅ Hecho     |
 | Compartir el turno por WhatsApp           | ✅ Hecho     |
 | Tema claro / oscuro                       | ✅ Hecho     |
+| Adjuntar foto (cámara / galería)          | ✅ Hecho     |
+| Ver mis turnos                            | ✅ Hecho     |
 | Iniciar sesión como paciente              | ⏳ Pendiente |
-| Adjuntar foto (cámara / galería)          | ⏳ Pendiente |
 | Recibir recordatorios de turno            | ⏳ Pendiente |
+
+El backend ya tiene preparados los endpoints de login (`api/auth`) y de
+avisos (`api/avisos`); falta conectarlos desde la app.
 
 ## Tecnologías
 
@@ -52,10 +59,21 @@ horarios, y deja reservar un turno:
 - TypeScript
 - Zustand para el estado global
 - Expo Location (GPS) y la API Share de React Native
-- Las librerías de cámara y galería (`expo-camera`, `expo-image-picker`)
-  quedan instaladas para la próxima entrega
+- Expo Camera y Expo Image Picker (cámara y galería)
+- Backend: ASP.NET Web API (.NET Framework 4.7.2) en la carpeta `backend/`
+- Base de datos: SQL Server, scripts en `database/` y `backend/Database/`
 
 ## Cómo correr el proyecto
+
+### Base de datos y API
+
+1. En SQL Server, ejecutar `database/esquema.sql` (crea la base
+   `TurneroDental` con sus tablas) y después
+   `backend/Database/01_horarios_consultas.sql`.
+2. Abrir `backend/TurneroDentalApi.sln` con Visual Studio, restaurar los
+   paquetes NuGet y ejecutarlo. La API queda en `https://localhost:44324/api`.
+
+### App móvil
 
 1. Instalar las dependencias:
 
@@ -63,14 +81,15 @@ horarios, y deja reservar un turno:
    npm install
    ```
 
-2. La app consume una API. Crear un archivo `.env` en la raíz con la
-   dirección de la API (reemplazar por la IP y el puerto donde corre):
+2. Copiar `.env.example` como `.env` y poner la dirección de la API:
 
    ```
-   EXPO_PUBLIC_API_URL=http://192.168.0.10:3000
+   EXPO_PUBLIC_API_URL=https://localhost:44324/api
    ```
 
-   Sin esta variable, el listado de profesionales va a mostrar un error.
+   Para probar en el celular, `localhost` es el propio teléfono: hay que
+   usar la IP de la PC donde corre la API. Sin esta variable, el listado de
+   profesionales va a mostrar un error.
 
 3. Levantar el proyecto:
 
