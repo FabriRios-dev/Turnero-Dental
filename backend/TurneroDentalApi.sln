@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33927.289
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurneroDentalApi", "TurneroDentalApi.csproj", "{FC18F2F7-943B-4D26-B660-B442E93396D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC18F2F7-943B-4D26-B660-B442E93396D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC18F2F7-943B-4D26-B660-B442E93396D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC18F2F7-943B-4D26-B660-B442E93396D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC18F2F7-943B-4D26-B660-B442E93396D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C7FAABB4-3CD0-4CED-BA72-3C3353C582FB}
+	EndGlobalSection
+EndGlobal
