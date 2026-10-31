@@ -48,3 +48,18 @@ example
 CLAUDE.md
 CLAUDE.local.md
 AGENTS.md
+
+# Visual Studio
+.vs/
+*.csproj.user
+
+# Compilación
+bin/
+obj/
+
+# Dependencias NuGet
+backend/packages/
+
+# Configuración local
+.env
+.env.local
