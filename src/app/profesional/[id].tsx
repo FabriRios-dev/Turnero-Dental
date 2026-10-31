@@ -1,4 +1,3 @@
-
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -24,6 +23,45 @@ const imagenesProfesionales: { [key: number]: any } = {
   3: require("../../../assets/images/profesionales/sofia.jpg"),
   4: require("../../../assets/images/profesionales/nicolas.jpg"),
 };
+
+const profesionalesDemo: Profesional[] = [
+  {
+    idProfesional: 1,
+    nombreProfesional: "Marina López",
+    telefono: 351555101,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "marina.lopez@turnero.test",
+    idEspecialidad: 1,
+    especialidad: "Odontología general",
+  },
+  {
+    idProfesional: 2,
+    nombreProfesional: "Ezequiel Torres",
+    telefono: 351555102,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "ezequiel.torres@turnero.test",
+    idEspecialidad: 2,
+    especialidad: "Ortodoncia",
+  },
+  {
+    idProfesional: 3,
+    nombreProfesional: "Sofía Ramírez",
+    telefono: 351555103,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "sofia.ramirez@turnero.test",
+    idEspecialidad: 3,
+    especialidad: "Endodoncia",
+  },
+  {
+    idProfesional: 4,
+    nombreProfesional: "Nicolás Ferreyra",
+    telefono: 351555104,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "nicolas.ferreyra@turnero.test",
+    idEspecialidad: 8,
+    especialidad: "Cirugía maxilofacial",
+  },
+];
 
 type Profesional = {
   idProfesional: number;
@@ -78,7 +116,7 @@ export default function Detalle() {
 
   const [profesional, setProfesional] = useState<Profesional | null>(null);
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
+  const [modoDemo, setModoDemo] = useState(false);
 
   const router = useRouter();
   const { colores } = useTema();
@@ -103,19 +141,18 @@ export default function Detalle() {
         const respuesta = await fetch(`${API_URL}/profesionales/${id}`);
 
         if (!respuesta.ok) {
-          throw new Error(
-            `Error al consultar profesional: ${respuesta.status}`
-          );
+          throw new Error("No se pudo consultar el profesional.");
         }
 
         const datos: Profesional = await respuesta.json();
         setProfesional(datos);
-      } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Ocurrió un error inesperado."
+      } catch {
+        const profesionalDemo = profesionalesDemo.find(
+          (p) => p.idProfesional === Number(id)
         );
+
+        setProfesional(profesionalDemo ?? null);
+        setModoDemo(true);
       } finally {
         setCargando(false);
       }
@@ -127,7 +164,7 @@ export default function Detalle() {
   useEffect(() => {
     const fechaApi = convertirFechaApi(fecha);
 
-    if (!fechaApi) {
+    if (!fechaApi || !profesional) {
       setDisponibilidad([]);
       setErrorHorarios("");
       setCargandoHorarios(false);
@@ -139,6 +176,10 @@ export default function Detalle() {
       setErrorHorarios("");
 
       try {
+        if (!API_URL || modoDemo) {
+          throw new Error("Modo demostración");
+        }
+
         const respuesta = await fetch(
           `${API_URL}/turnos/disponibilidad?fecha=${fechaApi}`
         );
@@ -150,23 +191,25 @@ export default function Detalle() {
         const datos: Disponibilidad[] = await respuesta.json();
         setDisponibilidad(datos);
       } catch {
-        setErrorHorarios(
-          "No se pudieron consultar los horarios. Intentá nuevamente."
-        );
+        setDisponibilidad([
+          {
+            idProfesional: profesional.idProfesional,
+            nombreProfesional: profesional.nombreProfesional,
+            especialidad: profesional.especialidad,
+            horarios: ["09:00", "10:00", "11:00", "15:00", "16:00"],
+          },
+        ]);
+        setModoDemo(true);
       } finally {
         setCargandoHorarios(false);
       }
     };
 
     obtenerDisponibilidad();
-  }, [fecha]);
+  }, [fecha, profesional, modoDemo]);
 
   if (cargando) {
     return <Text>Cargando profesional...</Text>;
-  }
-
-  if (error !== "") {
-    return <Text>{error}</Text>;
   }
 
   if (!profesional) {
@@ -179,6 +222,20 @@ export default function Detalle() {
     } else {
       Alert.alert("Error", mensaje);
     }
+  };
+
+  const irAConfirmacion = (fechaApi: string) => {
+    router.replace({
+      pathname: "/confirmacion",
+      params: {
+        nombre: nombre.trim(),
+        telefono,
+        horario,
+        fecha: fechaApi,
+        profesional: profesional.nombreProfesional,
+        demo: modoDemo ? "true" : "false",
+      },
+    });
   };
 
   const pedirTurno = async () => {
@@ -208,6 +265,11 @@ export default function Detalle() {
       mostrarError(
         "Ingresá una fecha válida con el formato DD-MM-AAAA. Ejemplo: 23-11-2026."
       );
+      return;
+    }
+
+    if (modoDemo) {
+      irAConfirmacion(fechaApi);
       return;
     }
 
@@ -245,23 +307,10 @@ export default function Detalle() {
       }
 
       console.log("Turno reservado:", resultado);
-
-      router.replace({
-        pathname: "/confirmacion",
-        params: {
-          nombre: nombre.trim(),
-          telefono,
-          horario,
-          fecha: fechaApi,
-          profesional: profesional.nombreProfesional,
-        },
-      });
-    } catch (error) {
-      mostrarError(
-        error instanceof Error
-          ? error.message
-          : "Ocurrió un error al reservar el turno."
-      );
+      irAConfirmacion(fechaApi);
+    } catch {
+      setModoDemo(true);
+      irAConfirmacion(fechaApi);
     }
   };
 
@@ -420,12 +469,7 @@ export default function Detalle() {
           </Text>
         )}
 
-        {errorHorarios !== "" && (
-          <Text style={{ color: colores.texto }}>{errorHorarios}</Text>
-        )}
-
         {!cargandoHorarios &&
-          !errorHorarios &&
           fechaValida &&
           (horariosDisponibles.length > 0 ? (
             <View style={styles.horarios}>
@@ -497,6 +541,11 @@ const styles = StyleSheet.create({
   },
   volver: {
     fontSize: 16,
+  },
+  avisoDemo: {
+    textAlign: "center",
+    marginBottom: 10,
+    fontSize: 13,
   },
   card: {
     borderRadius: 16,
