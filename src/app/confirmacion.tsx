@@ -1,103 +1,142 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, Share, StyleSheet, Text, View } from "react-native";
-import { consultorio } from "../components/Profesionales";
+import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTema } from "../components/TemaContext";
 
-export default function Confirmacion() {
-  const { nombre, telefono, horario, fecha, profesional } = useLocalSearchParams();
+export default function ConfirmacionScreen() {
   const router = useRouter();
+  const { nombre, telefono, horario, fecha, profesional } =
+    useLocalSearchParams<{
+      nombre: string;
+      telefono: string;
+      horario: string;
+      fecha: string;
+      profesional: string;
+    }>();
+
   const { colores } = useTema();
-  const fechaLocal = fecha
-    ? String(fecha).split("-").reverse().join("-")
-    : "";
 
   const compartirTurno = async () => {
-    const mapa = `https://www.google.com/maps/search/?api=1&query=${consultorio.latitude},${consultorio.longitude}`;
+    try {
+      await Share.share({
+        message: `Datos de mi turno odontológico:
 
-    await Share.share({
-      message:
-        `Turno confirmado 🦷\n` +
-        `Paciente: ${nombre}\n` +
-        `Profesional: ${profesional}\n` +
-        `Fecha: ${fechaLocal}\n` +
-        `Horario: ${horario}\n` +
-        `Lugar: ${consultorio.nombre}\n` +
-        mapa,
-    });
+Profesional: ${profesional}
+Fecha: ${fecha}
+Horario: ${horario}
+Paciente: ${nombre}
+Teléfono: ${telefono}`,
+      });
+    } catch (error) {
+      console.log("Error al compartir:", error);
+    }
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colores.fondo }]}>
-      <View style={[styles.card, { backgroundColor: colores.tarjeta }]}>
-        <Ionicons name="checkmark-circle" size={64} color={colores.acento} />
-        <Text style={[styles.titulo, { color: colores.texto }]}>¡Turno confirmado!</Text>
+    <View style={[styles.contenedor, { backgroundColor: colores.fondo }]}>
+      <Text style={styles.icono}>✓</Text>
 
-        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Paciente: {nombre}</Text>
-        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Teléfono: {telefono}</Text>
-        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Profesional: {profesional}</Text>
-        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Fecha: {fechaLocal}</Text>
-        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Horario: {horario}</Text>
-        <Text style={[styles.dato, { color: colores.textoSecundario }]}>Lugar: {consultorio.nombre}</Text>
+      <Text style={[styles.titulo, { color: colores.texto }]}>
+        ¡Listo!
+      </Text>
+
+      <Text style={[styles.subtitulo, { color: colores.textoSecundario }]}>
+        Estos son los datos de tu turno.
+      </Text>
+
+      <View style={[styles.tarjeta, { backgroundColor: colores.tarjeta }]}>
+        <Text style={[styles.dato, { color: colores.texto }]}>
+          Profesional: {profesional}
+        </Text>
+
+        <Text style={[styles.dato, { color: colores.texto }]}>
+          Fecha: {fecha}
+        </Text>
+
+        <Text style={[styles.dato, { color: colores.texto }]}>
+          Horario: {horario}
+        </Text>
+
+        <Text style={[styles.dato, { color: colores.texto }]}>
+          Paciente: {nombre}
+        </Text>
+
+        <Text style={[styles.dato, { color: colores.texto }]}>
+          Teléfono: {telefono}
+        </Text>
       </View>
 
-      <Pressable
-        onPress={compartirTurno}
-        style={[styles.botonCompartir, { borderColor: colores.acento }]}
-      >
-        <Ionicons name="logo-whatsapp" size={20} color={colores.acento} />
-        <Text style={[styles.textoBoton, { color: colores.acento }]}>Compartir turno</Text>
-      </Pressable>
-
-      <Pressable
-        onPress={() => router.back()}
+      <TouchableOpacity
         style={[styles.boton, { backgroundColor: colores.acento }]}
+        onPress={compartirTurno}
       >
-        <Text style={[styles.textoBoton, { color: colores.tarjeta }]}>Volver al inicio</Text>
-      </Pressable>
+        <Text style={styles.textoBoton}>Compartir turno</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.botonSecundario, { borderColor: colores.acento }]}
+        onPress={() => router.replace("/")}
+      >
+        <Text style={[styles.textoSecundario, { color: colores.acento }]}>
+          Volver al inicio
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  contenedor: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 16,
-  },
-  card: {
-    borderRadius: 16,
-    padding: 24,
     alignItems: "center",
+    padding: 24,
+  },
+  icono: {
+    fontSize: 64,
+    color: "#35A66F",
+    marginBottom: 12,
   },
   titulo: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: "bold",
-    marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  subtitulo: {
+    fontSize: 16,
+    marginBottom: 28,
+    textAlign: "center",
+  },
+  tarjeta: {
+    width: "100%",
+    padding: 20,
+    borderRadius: 14,
+    marginBottom: 24,
+    gap: 14,
   },
   dato: {
-    fontSize: 15,
-    marginBottom: 6,
-  },
-  botonCompartir: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 12,
-    marginTop: 16,
+    fontSize: 16,
   },
   boton: {
+    width: "100%",
+    padding: 15,
     borderRadius: 10,
-    paddingVertical: 12,
     alignItems: "center",
-    marginTop: 10,
+    marginBottom: 12,
   },
   textoBoton: {
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "bold",
+  },
+  botonSecundario: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  textoSecundario: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

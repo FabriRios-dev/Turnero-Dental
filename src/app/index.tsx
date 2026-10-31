@@ -23,31 +23,69 @@ type Profesional = {
   especialidad: string;
 };
 
+const profesionalesDemo: Profesional[] = [
+  {
+    idProfesional: 1,
+    nombreProfesional: "Marina López",
+    telefono: 351555101,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "marina.lopez@turnero.test",
+    idEspecialidad: 1,
+    especialidad: "Odontología general",
+  },
+  {
+    idProfesional: 2,
+    nombreProfesional: "Ezequiel Torres",
+    telefono: 351555102,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "ezequiel.torres@turnero.test",
+    idEspecialidad: 2,
+    especialidad: "Ortodoncia",
+  },
+  {
+    idProfesional: 3,
+    nombreProfesional: "Sofía Ramírez",
+    telefono: 351555103,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "sofia.ramirez@turnero.test",
+    idEspecialidad: 3,
+    especialidad: "Endodoncia",
+  },
+  {
+    idProfesional: 4,
+    nombreProfesional: "Nicolás Ferreyra",
+    telefono: 351555104,
+    direccion: "Av. Colón 100, Córdoba",
+    correo: "nicolas.ferreyra@turnero.test",
+    idEspecialidad: 8,
+    especialidad: "Cirugía maxilofacial",
+  },
+];
+
 export default function Index() {
   const [profesionales, setProfesionales] = useState<Profesional[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
+  const [modoDemo, setModoDemo] = useState(false);
   const { oscuro, cambiarTema, colores } = useTema();
 
   useEffect(() => {
     const obtenerProfesionales = async () => {
       try {
         if (!API_URL) {
-          throw new Error("No se configuró la URL de la API.");
+          throw new Error("API no configurada");
         }
 
         const respuesta = await fetch(`${API_URL}/profesionales`);
 
         if (!respuesta.ok) {
-          throw new Error(`Error al consultar profesionales: ${respuesta.status}`);
+          throw new Error("Error al consultar la API");
         }
 
         const datos: Profesional[] = await respuesta.json();
         setProfesionales(datos);
-      } catch (error) {
-        setError(
-          error instanceof Error ? error.message : "Ocurrió un error inesperado."
-        );
+      } catch {
+        setProfesionales(profesionalesDemo);
+        setModoDemo(true);
       } finally {
         setCargando(false);
       }
@@ -70,9 +108,20 @@ export default function Index() {
             <Ionicons name={oscuro ? "sunny" : "moon"} size={20} color={colores.acento} />
           </Pressable>
         </View>
+
         <Text style={[styles.subtitle, { color: colores.textoSecundario }]}>
           Elegí un profesional para pedir tu turno
         </Text>
+
+        <Link href="/mis-turnos" style={[styles.botonTurnos, { backgroundColor: colores.acento }]}>
+          <Ionicons name="calendar-outline" size={20} color="#FFFFFF" />
+          <Text style={styles.textoBotonTurnos}>Mis turnos</Text>
+        </Link>
+
+        <Link href="/perfil" style={[styles.botonTurnos, { backgroundColor: colores.acento }]}>
+          <Ionicons name="person-outline" size={20} color="#FFFFFF" />
+          <Text style={styles.textoBotonTurnos}>Mi perfil</Text>
+        </Link>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -80,11 +129,7 @@ export default function Index() {
           <Text style={{ color: colores.texto }}>Cargando profesionales...</Text>
         )}
 
-        {error !== "" && (
-          <Text style={{ color: "red" }}>{error}</Text>
-        )}
-
-        {!cargando && !error && profesionales.map((profesional) => (
+        {!cargando && profesionales.map((profesional) => (
           <Link
             key={profesional.idProfesional}
             href={`/profesional/${profesional.idProfesional}`}
@@ -97,7 +142,7 @@ export default function Index() {
           </Link>
         ))}
       </ScrollView>
-    </View >
+    </View>
   );
 }
 
@@ -130,5 +175,19 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingBottom: 24,
+  },
+  botonTurnos: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 16,
+  },
+  textoBotonTurnos: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    marginLeft: 8,
+    fontSize: 15,
   },
 });
